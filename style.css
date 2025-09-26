@@ -69,6 +69,11 @@
     /* 显示模态框 */
 }
 
+/* 新增：当模态框打开时，禁止body滚动 */
+body.modal-open {
+    overflow: hidden;
+}
+
 .modal-card {
     background-color: var(--card-bg-color);
     color: var(--text-color-primary);
@@ -96,8 +101,8 @@
 .close-btn {
     /* 修改：改为绝对定位，脱离卡片 */
     position: absolute;
-    top: 1.5rem;
-    right: 2rem;
+    top: 0.5rem;
+    right: 1rem;
     background: none;
     border: none;
     font-size: 2.5rem;

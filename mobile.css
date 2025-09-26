@@ -1,10 +1,25 @@
-/* 移动端适配样式 (屏幕宽度小于等于 768px) */
+/* ==========================================================================
+   响应式样式
+   ========================================================================== */
+
+/* --- 1. 中等屏幕 / 横屏平板 (<= 992px) --- */
+@media (max-width: 992px) {
+    .main-content {
+        gap: 1rem;
+        /* 减小主内容区和例句区的间距 */
+        max-width: 100%;
+        padding: 0 1rem;
+        /* 为两侧添加一些边距 */
+    }
+}
+
+/* --- 2. 竖屏平板 / 大型手机 (<= 768px) --- */
 @media (max-width: 768px) {
     body {
         padding: 0.5rem;
         /* 减小页面边距 */
         align-items: flex-start;
-        /* 内容从顶部开始 */
+        /* 内容从顶部开始，而不是垂直居中 */
     }
 
     /* 主内容区改为垂直堆叠 */
@@ -13,6 +28,8 @@
         align-items: stretch;
         /* 让子元素宽度撑满 */
         gap: 1rem;
+        padding: 0;
+        /* body已有padding，此处不再需要 */
     }
 
     /* 卡片和例句容器都占据全部宽度 */
@@ -22,12 +39,12 @@
         padding: 1rem;
     }
 
-    /* 新增：取消单词卡片的最小高度限制 */
+    /* 取消单词卡片的最小高度限制，让其自适应内容 */
     .word-card {
         min-height: auto;
     }
 
-    /* 新增：取消短语区的滚动条，让其自然展开 */
+    /* 取消短语区的滚动条，让其自然展开 */
     .word-example {
         max-height: none;
         overflow-y: visible;
@@ -42,14 +59,116 @@
         font-size: 1.75rem;
     }
 
-    /* 调整主题切换按钮位置，避免遮挡内容 */
+    /* 调整浮动按钮位置，避免遮挡内容 */
     .theme-toggle-btn {
         top: 0.5rem;
         right: 0.5rem;
     }
 
+    .settings-btn {
+        bottom: 0.5rem;
+        right: 0.5rem;
+    }
+
+    /* 减小浮动按钮的尺寸和内边距 */
+    .theme-toggle-btn,
+    .settings-btn {
+        width: 2.25rem;
+        height: 2.25rem;
+        font-size: 1.1rem;
+    }
+
+    /* 减小卡片内部控制按钮的内边距 */
+    .control-btn,
+    .search-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
     /* 减少例句列表的最大高度 */
     .sentences-list {
-        max-height: 18rem;
+        max-height: none;
+    }
+
+    /* 调整模态框，使其更适合移动端 */
+    .modal-card {
+        padding: 1rem;
+    }
+
+    .modal-header {
+        padding-bottom: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .close-btn {
+        font-size: 2rem;
+        top: 0.25rem;
+        right: 0.75rem;
+    }
+}
+
+/* --- 3. 小型手机 (<= 480px) --- */
+@media (max-width: 480px) {
+    body {
+        padding: 0.25rem;
+        /* 进一步减小页面边距 */
+    }
+
+    .card-container,
+    .sentences-container {
+        padding: 0.75rem;
+        /* 减小卡片内边距 */
+    }
+
+    /* 进一步减小字体 */
+    .word-text {
+        font-size: 1.5rem;
+    }
+
+    .word-phonetic,
+    .word-pos,
+    .word-def {
+        font-size: 0.875rem;
+    }
+
+    .sentence-en,
+    .sentence-cn {
+        font-size: 0.85rem;
+    }
+
+    /* 调整发音区域布局，使其垂直堆叠 */
+    .phonetic-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .pronounce-group {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .pronounce-group .pronounce-item:last-child {
+        text-align: left;
+        /* “默认发音”也靠左 */
+        margin-top: 0;
+    }
+
+    .control-area {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .control-area i {
+        display: none;
+    }
+
+    .control-btn {
+        font-size: 0.875rem;
+    }
+
+    .progress-text {
+        text-align: center;
     }
 }

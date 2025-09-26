@@ -57,23 +57,23 @@ let currentIndex = 0;
 function playAudio(word, type) {
     if (!word) return;
     const audioUrl = `https://dict.youdao.com/dictvoice?audio=${word}&type=${type}`;
+    // type: 0-2美音, 1-英音
     const audio = new Audio(audioUrl);
-    audio.play().catch(e => console.error("音频播放失败:", e));
+    audio.play().catch((e) => console.error("音频播放失败:", e));
 }
 
 // 渲染单词卡片
-function renderWord(index, shouldAutoplay = false) { // 添加 shouldAutoplay 参数
+function renderWord(index, shouldAutoplay = false) {
+    // 添加 shouldAutoplay 参数
     if (!words.length) return;
     const word = words[index];
     // 兼容你的数据结构，需根据实际字段调整
     const headWord = word.headWord || word.word || "";
     const level = word.level || "4级";
-    const phonetic =
-        word.content?.word?.content?.usphone || word.phonetic || "";
+    const phonetic = word.content?.word?.content?.usphone || word.phonetic || "";
     const pos =
         word.content?.word?.content?.syno?.synos?.[0]?.pos || word.pos || "";
-    const def =
-        word.content?.word?.content?.trans?.[0]?.tranCn || word.def || "";
+    const def = word.content?.word?.content?.trans?.[0]?.tranCn || word.def || "";
 
     // --- 分别处理短语和例句 ---
     const phrases = word.content?.word?.content?.phrase?.phrases;
@@ -113,17 +113,18 @@ function renderWord(index, shouldAutoplay = false) { // 添加 shouldAutoplay �
       
       <!-- 新的发音和音标容器 -->
       <div class="phonetic-container">
-        <span class="word-phonetic">${phonetic ? "/" + phonetic + "/" : ""}</span>
+        <span class="word-phonetic">${phonetic ? "/" + phonetic + "/" : ""
+        }</span>
         <div class="pronounce-group">
             <div class="pronounce-item" data-word="${headWord}" data-type="1" title="英式发音">
                 <span class="label">英</span>
                 <i class="fa fa-volume-up"></i>
             </div>
-            <div class="pronounce-item" data-word="${headWord}" data-type="2" title="美式发音">
+            <div class="pronounce-item" data-word="${headWord}" data-type="0" title="美式发音">
                 <span class="label">美</span>
                 <i class="fa fa-volume-up"></i>
             </div>
-            <div class="pronounce-item">默认美式发音</div>
+            <div class="pronounce-item">默认发音</div>
         </div>
       </div>
 
@@ -138,12 +139,12 @@ function renderWord(index, shouldAutoplay = false) { // 添加 shouldAutoplay �
   `;
 
     // --- 修改：为新的发音项目绑定点击事件 ---
-    wordCard.querySelectorAll('.pronounce-item').forEach(item => {
-        item.addEventListener('click', (e) => {
+    wordCard.querySelectorAll(".pronounce-item").forEach((item) => {
+        item.addEventListener("click", (e) => {
             // 事件可能在父元素或子元素上触发，我们从父元素获取数据
             const currentItem = e.currentTarget;
-            const wordToPlay = currentItem.getAttribute('data-word');
-            const type = currentItem.getAttribute('data-type');
+            const wordToPlay = currentItem.getAttribute("data-word");
+            const type = currentItem.getAttribute("data-type");
             playAudio(wordToPlay, type);
         });
     });
@@ -219,16 +220,19 @@ randomBtn.addEventListener("click", handleRandom); // 新增
 // --- 模态框控制逻辑 ---
 settingsBtn.addEventListener("click", () => {
     settingsModal.classList.add("open");
+    document.body.classList.add("modal-open"); // 新增：禁止背景滚动
 });
 
 closeModalBtn.addEventListener("click", () => {
     settingsModal.classList.remove("open");
+    document.body.classList.remove("modal-open"); // 新增：恢复背景滚动
 });
 
 // 点击遮罩区域关闭模态框
 settingsModal.addEventListener("click", (event) => {
     if (event.target === settingsModal) {
         settingsModal.classList.remove("open");
+        document.body.classList.remove("modal-open"); // 新增：恢复背景滚动
     }
 });
 
@@ -241,8 +245,7 @@ async function loadWords() {
 
         const objMatches = text.match(/{[\s\S]*?}(?=\s*{|\s*$)/g);
 
-        if (!objMatches)
-            throw new Error("在文件中未找到任何有效的单词对象。");
+        if (!objMatches) throw new Error("在文件中未找到任何有效的单词对象。");
 
         words = objMatches.map((objStr) => JSON.parse(objStr.trim()));
 
