@@ -1,338 +1,399 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>四级单词</title>
-    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
     <style>
-        /* 全局样式重置与基础设置 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-                "Helvetica Neue", Arial, sans-serif;
-        }
+      /* 全局样式重置与基础设置 */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+      }
 
-        body {
-            background-color: #f9fafb;
-            /* 原bg-gray-50 */
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1rem;
-            /* 原p-4 */
-        }
+      body {
+        background-color: #f9fafb;
+        min-height: 100vh;
+        display: flex;
+        align-items: center; /* 修改为 center */
+        justify-content: center;
+        padding: 1rem;
+      }
 
-        /* 主卡片容器 */
-        .card-container {
-            max-width: 28rem;
-            /* 原max-w-md */
-            width: 100%;
-            background-color: #ffffff;
-            /* 原bg-white */
-            border-radius: 0.75rem;
-            /* 原rounded-xl */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-                0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            /* 原shadow-lg */
-            padding: 1.5rem;
-            /* 原p-6 */
-            margin-top: 2rem;
-            /* 原mt-8 */
-        }
+      /* 新增：主内容区，用于左右布局 */
+      .main-content {
+        display: flex;
+        align-items: flex-start; /* 顶部对齐 */
+        gap: 1.5rem; /* 卡片和例句区的间距 */
+        width: 100%;
+        max-width: 64rem; /* 增大最大宽度以容纳两个区域 */
+      }
 
-        /* 标题样式 */
-        .page-title {
-            font-size: 1.5rem;
-            /* 原text-2xl */
-            font-weight: 700;
-            /* 原font-bold */
-            text-align: center;
-            color: #2563eb;
-            /* 原text-blue-600 */
-            margin-bottom: 1.5rem;
-            /* 原mb-6 */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+      /* 主卡片容器 */
+      .card-container {
+        flex: 1; /* 占据可用空间 */
+        max-width: 28rem;
+        width: 100%;
+        background-color: #ffffff;
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        padding: 1.5rem;
+      }
 
-        .page-title i {
-            margin-right: 0.5rem;
-            /* 原mr-2 */
-        }
+      /* 标题样式 */
+      .page-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-align: center;
+        color: #2563eb;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-        /* 单词卡片样式 */
-        .word-card {
-            border: 1px solid #e5e7eb;
-            /* 原border */
-            border-radius: 0.5rem;
-            /* 原rounded-lg */
-            padding: 1.25rem;
-            /* 原p-5 */
-            margin-bottom: 1.5rem;
-            /* 原mb-6 */
-            min-height: 12.5rem;
-            /* 原min-h-[200px] */
-        }
+      .page-title i {
+        margin-right: 0.5rem;
+      }
 
-        /* 单词与级别行 */
-        .word-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-            /* 原mb-2 */
-        }
+      /* 单词卡片样式 */
+      .word-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+        min-height: 12.5rem;
+      }
 
-        .word-text {
-            font-size: 1.875rem;
-            /* 原text-3xl */
-            font-weight: 700;
-            /* 原font-bold */
-            color: #1f2937;
-            /* 原text-gray-800 */
-        }
+      /* 单词与级别行 */
+      .word-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+      }
 
-        .word-level {
-            background-color: #dbeafe;
-            /* 原bg-blue-100 */
-            color: #1e40af;
-            /* 原text-blue-800 */
-            padding: 0.25rem 0.5rem;
-            /* 原px-2 py-1 */
-            border-radius: 0.25rem;
-            /* 原rounded */
-            font-size: 0.875rem;
-            /* 原text-sm */
-        }
+      .word-text {
+        font-size: 1.875rem;
+        font-weight: 700;
+        color: #1f2937;
+      }
 
-        /* 音标样式 */
-        .word-phonetic {
-            color: #6b7280;
-            /* 原text-gray-500 */
-            font-style: italic;
-            /* 原italic */
-            margin-bottom: 0.75rem;
-            /* 原mb-3 */
-        }
+      .word-level {
+        background-color: #dbeafe;
+        color: #1e40af;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+      }
 
-        /* 词性样式 */
-        .word-pos {
-            color: #7c3aed;
-            /* 原text-purple-600 */
-            margin-bottom: 0.75rem;
-            /* 原mb-3 */
-        }
+      /* 音标样式 */
+      .word-phonetic {
+        color: #6b7280;
+        font-style: italic;
+        margin-bottom: 0.75rem;
+      }
 
-        /* 释义样式 */
-        .word-def {
-            color: #374151;
-            /* 原text-gray-700 */
-            margin-bottom: 1rem;
-            /* 原mb-4 */
-        }
+      /* 词性样式 */
+      .word-pos {
+        color: #7c3aed;
+        margin-bottom: 0.75rem;
+      }
 
-        /* 例句样式 */
-        .word-example {
-            color: #4b5563;
-            /* 原text-gray-600 */
-            font-size: 0.875rem;
-            /* 原text-sm */
-            font-style: italic;
-            /* 原italic */
-            border-left: 2px solid #e5e7eb;
-            /* 原border-l-2 border-gray-200 */
-            padding-left: 0.75rem;
-            /* 原pl-3 */
-        }
+      /* 释义样式 */
+      .word-def {
+        color: #374151;
+        margin-bottom: 1rem;
+      }
 
-        /* 控制按钮区域 */
-        .control-area {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            /* 确保按钮与进度文本垂直居中 */
-        }
+      /* 例句样式 -> 修改为短语样式 */
+      .word-example {
+        color: #4b5563;
+        font-size: 0.875rem;
+        border-left: 2px solid #e5e7eb;
+        padding-left: 0.75rem;
+      }
 
-        /* 按钮通用样式 */
-        .control-btn {
-            padding: 0.5rem 1rem;
-            /* 原px-4 py-2 */
-            border-radius: 0.5rem;
-            /* 原rounded-lg */
-            border: none;
-            font-size: 0.875rem;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
+      /* 短语标题 */
+      .phrases-title {
+        font-weight: bold;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+      }
 
-        .control-btn i {
-            margin-right: 0.5rem;
-            /* 原mr-2（左按钮）/ ml-2（右按钮） */
-        }
+      .word-example-item:not(:last-child) {
+        margin-bottom: 0.5rem;
+      }
 
-        /* 左按钮样式 */
-        .prev-btn {
-            background-color: #e5e7eb;
-            /* 原bg-gray-200 */
-            color: #1f2937;
-            /* 原text-gray-800 */
-        }
+      /* 新增：例句容器样式 */
+      .sentences-container {
+        flex: 1.2; /* 占据更多空间 */
+        background-color: #ffffff;
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        padding: 1.5rem;
+        align-self: stretch; /* 高度与卡片容器对齐 */
+      }
 
-        .prev-btn:hover {
-            background-color: #d1d5db;
-            /* 原hover:bg-gray-300 */
-        }
+      .sentences-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #2563eb;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 1rem;
+      }
 
-        /* 右按钮样式 */
-        .next-btn {
-            background-color: #3b82f6;
-            /* 原bg-blue-500 */
-            color: #ffffff;
-            /* 原text-white */
-        }
+      .sentences-title i {
+        margin-right: 0.5rem;
+      }
 
-        .next-btn:hover {
-            background-color: #2563eb;
-            /* 原hover:bg-blue-600 */
-        }
+      .sentences-list {
+        max-height: 24rem; /* 限制最大高度，超出则滚动 */
+        overflow-y: auto;
+        font-size: 0.95rem;
+      }
 
-        .next-btn i {
-            margin-left: 0.5rem;
-            /* 右按钮图标在文字右侧，原ml-2 */
-            margin-right: 0;
-        }
+      .sentence-item {
+        margin-bottom: 1.25rem;
+      }
 
-        /* 进度文本样式 */
-        .progress-text {
-            color: #6b7280;
-            /* 原text-gray-500 */
-            font-size: 0.875rem;
-        }
+      .sentence-en {
+        color: #1f2937;
+        margin-bottom: 0.25rem;
+      }
+
+      .sentence-cn {
+        color: #6b7280;
+      }
+
+      /* 控制按钮区域 */
+      .control-area {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        /* 确保按钮与进度文本垂直居中 */
+      }
+
+      /* 按钮通用样式 */
+      .control-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        border: none;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+
+      .control-btn i {
+        margin-right: 0.5rem;
+      }
+
+      /* 左按钮样式 */
+      .prev-btn {
+        background-color: #e5e7eb;
+        color: #1f2937;
+      }
+
+      .prev-btn:hover {
+        background-color: #d1d5db;
+      }
+
+      /* 右按钮样式 */
+      .next-btn {
+        background-color: #3b82f6;
+        color: #ffffff;
+      }
+
+      .next-btn:hover {
+        background-color: #2563eb;
+      }
+
+      .next-btn i {
+        margin-left: 0.5rem;
+        margin-right: 0;
+      }
+
+      /* 进度文本样式 */
+      .progress-text {
+        color: #6b7280;
+        font-size: 0.875rem;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-    <div class="card-container">
+  <body>
+    <div class="main-content">
+      <div class="card-container">
         <!-- 页面标题 -->
-        <h1 class="page-title"><i class="fa fa-book"></i>四六级单词记忆</h1>
+        <h1 class="page-title"><i class="fa fa-book"></i>四级单词记忆</h1>
 
         <!-- 单词卡片 -->
         <div class="word-card">
-            <div class="word-header">
-                <span class="word-text">abandon</span>
-                <span class="word-level">4级</span>
-            </div>
-            <div class="word-phonetic">/əˈbændən/</div>
-            <div class="word-pos">v. / n.</div>
-            <div class="word-def">v. 抛弃；放弃；中止；n. 放任；放纵</div>
-            <div class="word-example">
-                He abandoned all hope.（他放弃了所有希望。）
-            </div>
+          <!-- 内容将由JS动态填充 -->
         </div>
 
         <!-- 控制按钮区域 -->
         <div class="control-area">
-            <button class="control-btn prev-btn">
-                <i class="fa fa-arrow-left"></i>上一个
-            </button>
-            <span class="progress-text">1/3</span>
-            <button class="control-btn next-btn">
-                下一个<i class="fa fa-arrow-right"></i>
-            </button>
+          <button class="control-btn prev-btn">
+            <i class="fa fa-arrow-left"></i>上一个
+          </button>
+          <span class="progress-text">1/1</span>
+          <button class="control-btn next-btn">
+            下一个<i class="fa fa-arrow-right"></i>
+          </button>
         </div>
+      </div>
+
+      <!-- 新的例句容器 -->
+      <div class="sentences-container">
+        <h2 class="sentences-title">
+          <i class="fa fa-comments-o"></i> 相关例句
+        </h2>
+        <div class="sentences-list">
+          <!-- 例句将由JS动态填充 -->
+          <p>请先加载单词...</p>
+        </div>
+      </div>
     </div>
     <script>
-        // 配置
-        const wordListUrl = "CET4luan_2.json";
-        const pageSize = 1; // 每次只显示1个单词，防止页面卡顿
+      // 配置
+      const wordListUrl = "CET4luan_2.json";
+      const pageSize = 1; // 每次只显示1个单词，防止页面卡顿
 
-        // DOM 元素
-        const wordCard = document.querySelector('.word-card');
-        const prevBtn = document.querySelector('.prev-btn');
-        const nextBtn = document.querySelector('.next-btn');
-        const progressText = document.querySelector('.progress-text');
+      // DOM 元素
+      const wordCard = document.querySelector(".word-card");
+      const sentencesList = document.querySelector(".sentences-list"); // 新增
+      const prevBtn = document.querySelector(".prev-btn");
+      const nextBtn = document.querySelector(".next-btn");
+      const progressText = document.querySelector(".progress-text");
 
-        // 状态
-        let words = [];
-        let currentIndex = 0;
+      // 状态
+      let words = [];
+      let currentIndex = 0;
 
-        // 渲染单词卡片
-        function renderWord(index) {
-            if (!words.length) return;
-            const word = words[index];
-            // 兼容你的数据结构，需根据实际字段调整
-            const headWord = word.headWord || word.word || '';
-            const level = word.level || '4级';
-            const phonetic = word.content?.word?.content?.usphone || word.phonetic || '';
-            const pos = word.content?.word?.content?.syno?.synos?.[0]?.pos || word.pos || '';
-            const def = word.content?.word?.content?.trans?.[0]?.tranCn || word.def || '';
-            const example = word.content?.word?.content?.sentence?.sentences?.[0]?.sContent || word.example || '';
-            const exampleCn = word.content?.word?.content?.sentence?.sentences?.[0]?.sCn || '';
+      // 渲染单词卡片
+      function renderWord(index) {
+        if (!words.length) return;
+        const word = words[index];
+        // 兼容你的数据结构，需根据实际字段调整
+        const headWord = word.headWord || word.word || "";
+        const level = word.level || "4级";
+        const phonetic =
+          word.content?.word?.content?.usphone || word.phonetic || "";
+        const pos =
+          word.content?.word?.content?.syno?.synos?.[0]?.pos || word.pos || "";
+        const def =
+          word.content?.word?.content?.trans?.[0]?.tranCn || word.def || "";
 
-            wordCard.innerHTML = `
+        // --- 开始修改：分别处理短语和例句 ---
+        const phrases = word.content?.word?.content?.phrase?.phrases;
+        const sentences = word.content?.word?.content?.sentence?.sentences;
+        let phrasesHtml = "";
+        let sentencesHtml = "";
+
+        // 1. 处理短语
+        if (phrases && phrases.length > 0) {
+          phrasesHtml = phrases
+            .map(
+              (p) =>
+                `<div class="word-example-item"><strong>${p.pContent}</strong>: ${p.pCn}</div>`
+            )
+            .join("");
+        }
+
+        // 2. 处理例句
+        if (sentences && sentences.length > 0) {
+          sentencesHtml = sentences
+            .map((sentence) => {
+              const sContent = sentence.sContent || "";
+              const sCn = sentence.sCn || "";
+              return `<div class="sentence-item">
+                        <p class="sentence-en">${sContent}</p>
+                        <p class="sentence-cn">${sCn}</p>
+                      </div>`;
+            })
+            .join("");
+        }
+        // --- 结束修改 ---
+
+        wordCard.innerHTML = `
             <div class="word-header">
                 <span class="word-text">${headWord}</span>
                 <span class="word-level">${level}</span>
             </div>
-            <div class="word-phonetic">${phonetic ? '/' + phonetic + '/' : ''}</div>
+            <div class="word-phonetic">${
+              phonetic ? "/" + phonetic + "/" : ""
+            }</div>
             <div class="word-pos">${pos}</div>
             <div class="word-def">${def}</div>
             <div class="word-example">
-                ${example}${exampleCn ? '（' + exampleCn + '）' : ''}
+                ${
+                  phrasesHtml
+                    ? '<div class="phrases-title">相关短语</div>' + phrasesHtml
+                    : ""
+                }
             </div>
         `;
-            progressText.textContent = `${index + 1}/${words.length}`;
-            prevBtn.disabled = index === 0;
-            nextBtn.disabled = index === words.length - 1;
+
+        // 更新例句区域
+        sentencesList.innerHTML = sentencesHtml || "<p>暂无相关例句</p>";
+
+        progressText.textContent = `${index + 1}/${words.length}`;
+        prevBtn.disabled = index === 0;
+        nextBtn.disabled = index === words.length - 1;
+      }
+
+      // 切换
+      prevBtn.onclick = () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          renderWord(currentIndex);
         }
-
-        // 切换
-        prevBtn.onclick = () => {
-            if (currentIndex > 0) {
-                currentIndex--;
-                renderWord(currentIndex);
-            }
-        };
-        nextBtn.onclick = () => {
-            if (currentIndex < words.length - 1) {
-                currentIndex++;
-                renderWord(currentIndex);
-            }
-        };
-
-        // 异步加载 JSON
-        async function loadWords() {
-            try {
-                const res = await fetch(wordListUrl);
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                const text = await res.text();
-
-                // 使用正则表达式匹配所有由 {...} 包裹的对象
-                const objMatches = text.match(/{[\s\S]*?}(?=\s*{|\s*$)/g);
-
-                if (!objMatches) throw new Error('在文件中未找到任何有效的单词对象。');
-
-                // 解析每个对象字符串，并在解析前去除首尾空白
-                words = objMatches.map(objStr => JSON.parse(objStr.trim()));
-
-                renderWord(currentIndex);
-            } catch (e) {
-                console.error("加载或解析单词失败:", e); // 在控制台打印详细错误
-                wordCard.innerHTML = `<div style="color:red">单词加载失败: ${e.message}</div>`;
-            }
+      };
+      nextBtn.onclick = () => {
+        if (currentIndex < words.length - 1) {
+          currentIndex++;
+          renderWord(currentIndex);
         }
+      };
 
-        // 初始化
-        loadWords();
+      // 异步加载 JSON
+      async function loadWords() {
+        try {
+          const res = await fetch(wordListUrl);
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          const text = await res.text();
+
+          // 使用正则表达式匹配所有由 {...} 包裹的对象
+          const objMatches = text.match(/{[\s\S]*?}(?=\s*{|\s*$)/g);
+
+          if (!objMatches)
+            throw new Error("在文件中未找到任何有效的单词对象。");
+
+          // 解析每个对象字符串，并在解析前去除首尾空白
+          words = objMatches.map((objStr) => JSON.parse(objStr.trim()));
+
+          renderWord(currentIndex);
+        } catch (e) {
+          console.error("加载或解析单词失败:", e); // 在控制台打印详细错误
+          wordCard.innerHTML = `<div style="color:red">单词加载失败: ${e.message}</div>`;
+        }
+      }
+
+      // 初始化
+      loadWords();
     </script>
-</body>
-
+  </body>
 </html>
