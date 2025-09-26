@@ -5,6 +5,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>四级单词</title>
+    <!-- 新增：默认 Favicon -->
+    <link rel="icon" href="halloween_hat_witch_horror_magic_icon.svg" />
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <style>
         /* 定义 CSS 变量 */
@@ -75,15 +77,100 @@
             text-decoration: none;
             color: inherit;
         }
+
+        /* 新增：模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-card {
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--card-border-color);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            width: 90%;
+            max-width: 32rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-content {
+            padding: 1rem;
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            font-size: 1.125rem;
+            border-bottom: 1px solid var(--card-border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .modal-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0.5rem 0;
+        }
+
+        .modal-content li {
+            margin: 0.5rem 0;
+        }
+
+        .modal-content a {
+            text-decoration: none;
+            color: var(--text-color-primary);
+            transition: color 0.3s;
+        }
+
+        .modal-content a:hover {
+            color: var(--primary-color);
+        }
+
+        .list-divider {
+            margin: 1.5rem 0 0.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            color: var(--text-color-secondary);
+        }
     </style>
     <!-- 引入外部样式表 -->
     <link rel="stylesheet" href="style.css" />
-    <!-- 新增：引入移动端适配样式表 -->
+    <!-- 引入移动端适配样式表 -->
     <link rel="stylesheet" href="mobile.css" />
 </head>
 
 <body>
-    <!-- 新增：暗黑模式切换按钮 -->
+    <!-- 暗黑模式切换按钮 -->
     <button id="theme-toggle" class="theme-toggle-btn">
         <i class="fa fa-moon-o"></i>
     </button>
@@ -113,7 +200,7 @@
                     <i class="fa fa-arrow-left"></i>上一个
                 </button>
                 <span class="progress-text">0/0</span>
-                <!-- 新增：右侧按钮组 -->
+                <!-- 右侧按钮组 -->
                 <div class="right-controls">
                     <button id="randomBtn" class="control-btn">
                         <i class="fa fa-random"></i>随机
@@ -135,6 +222,62 @@
             </div>
         </div>
     </div>
+
+    <!-- 设置按钮 -->
+    <button id="settingsBtn" class="settings-btn">
+        <i class="fa fa-cog"></i>
+    </button>
+
+    <!-- 新增：设置模态框 -->
+    <div id="settingsModal" class="modal-overlay">
+        <!-- 1. 将关闭按钮移到卡片外部 -->
+        <button id="closeModalBtn" class="close-btn">&times;</button>
+
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>设置</h2>
+                <!-- 关闭按钮已从此移除 -->
+            </div>
+            <div class="modal-content">
+                <h3>词书列表</h3>
+                <ul>
+                    <li><a href="#" class="active">大学英语四级核心词汇</a></li>
+                    <li>
+                        <a href="#" class="disabled">大学英语六级核心词汇 (待添加)</a>
+                    </li>
+                    <li><a href="#" class="disabled">考研英语核心词汇 (待添加)</a></li>
+                </ul>
+
+                <!-- 2. 新增静态书籍链接列表 -->
+                <h3 class="list-divider">链接</h3>
+                <ul>
+                    <li>
+                        <a href="https://gitee.com/zhangchang521/english-word" target="_blank"
+                            rel="noopener noreferrer">
+                            Gitee 数据 <i class="fa fa-external-link"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/mahavivo/english-wordlists" target="_blank"
+                            rel="noopener noreferrer">
+                            Github 数据 <i class="fa fa-external-link"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/KyleBing/english-vocabulary" target="_blank"
+                            rel="noopener noreferrer">Github 数据 <i class="fa fa-external-link"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/KyleBing/vocabulary" target="_blank" rel="noopener noreferrer">"蚕食"
+                            应用 <i class="fa fa-external-link"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <span>&copy; 2025 四级单词记忆</span>
         <span><a

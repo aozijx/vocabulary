@@ -22,6 +22,17 @@
         padding: 1rem;
     }
 
+    /* 新增：取消单词卡片的最小高度限制 */
+    .word-card {
+        min-height: auto;
+    }
+
+    /* 新增：取消短语区的滚动条，让其自然展开 */
+    .word-example {
+        max-height: none;
+        overflow-y: visible;
+    }
+
     /* 调整字体大小以适应小屏幕 */
     .page-title {
         font-size: 1.25rem;
