@@ -1,0 +1,44 @@
+/* 移动端适配样式 (屏幕宽度小于等于 768px) */
+@media (max-width: 768px) {
+    body {
+        padding: 0.5rem;
+        /* 减小页面边距 */
+        align-items: flex-start;
+        /* 内容从顶部开始 */
+    }
+
+    /* 主内容区改为垂直堆叠 */
+    .main-content {
+        flex-direction: column;
+        align-items: stretch;
+        /* 让子元素宽度撑满 */
+        gap: 1rem;
+    }
+
+    /* 卡片和例句容器都占据全部宽度 */
+    .card-container,
+    .sentences-container {
+        max-width: 100%;
+        padding: 1rem;
+    }
+
+    /* 调整字体大小以适应小屏幕 */
+    .page-title {
+        font-size: 1.25rem;
+    }
+
+    .word-text {
+        font-size: 1.75rem;
+    }
+
+    /* 调整主题切换按钮位置，避免遮挡内容 */
+    .theme-toggle-btn {
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+
+    /* 减少例句列表的最大高度 */
+    .sentences-list {
+        max-height: 18rem;
+    }
+}

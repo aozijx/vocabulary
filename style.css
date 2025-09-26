@@ -101,7 +101,7 @@
     border-radius: 0.5rem;
     padding: 1.25rem;
     margin-bottom: 1.5rem;
-    min-height: 12.5rem;
+    min-height: 20rem;
 }
 
 /* 单词与级别行 */
@@ -216,6 +216,13 @@
     align-items: center;
 }
 
+/* 新增：右侧按钮组 */
+.right-controls {
+    display: flex;
+    gap: 0.5rem;
+    /* 按钮间距 */
+}
+
 .control-btn {
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
@@ -229,6 +236,16 @@
 
 .control-btn i {
     margin-right: 0.5rem;
+}
+
+/* 新增：随机按钮样式 */
+#randomBtn {
+    background-color: var(--btn-secondary-bg);
+    color: var(--text-color-primary);
+}
+
+#randomBtn:hover {
+    background-color: var(--btn-secondary-hover-bg);
 }
 
 .prev-btn {

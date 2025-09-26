@@ -41,6 +41,7 @@ const wordCard = document.querySelector(".word-card");
 const sentencesList = document.querySelector(".sentences-list");
 const prevBtn = document.querySelector(".prev-btn");
 const nextBtn = document.querySelector(".next-btn");
+const randomBtn = document.getElementById("randomBtn"); // 新增
 const progressText = document.querySelector(".progress-text");
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
@@ -136,6 +137,20 @@ function handleSearch() {
     }
 }
 
+// --- 新增：随机跳转函数 ---
+function handleRandom() {
+    if (words.length <= 1) return; // 如果只有一个或没有单词，则不执行
+
+    let newIndex;
+    // 循环直到找到一个与当前不同的新索引
+    do {
+        newIndex = Math.floor(Math.random() * words.length);
+    } while (newIndex === currentIndex);
+
+    currentIndex = newIndex;
+    renderWord(currentIndex);
+}
+
 // 切换事件
 prevBtn.onclick = () => {
     if (currentIndex > 0) {
@@ -150,13 +165,14 @@ nextBtn.onclick = () => {
     }
 };
 
-// 搜索事件
+// 搜索与随机事件
 searchBtn.addEventListener("click", handleSearch);
 searchInput.addEventListener("keyup", (event) => {
     if (event.key === "Enter") {
         handleSearch();
     }
 });
+randomBtn.addEventListener("click", handleRandom); // 新增
 
 // 异步加载 JSON
 async function loadWords() {
