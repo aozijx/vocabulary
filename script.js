@@ -1,3 +1,38 @@
+// --- 新增：主题切换逻辑 ---
+const themeToggleBtn = document.getElementById("theme-toggle");
+const currentTheme = localStorage.getItem("theme");
+const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+// 初始化主题
+function initializeTheme() {
+    if (currentTheme) {
+        document.documentElement.setAttribute("data-theme", currentTheme);
+        if (currentTheme === "dark") {
+            themeToggleBtn.innerHTML = '<i class="fa fa-sun-o"></i>';
+        }
+    } else if (prefersDark) {
+        // 如果用户系统设置为暗色，则默认使用暗色主题
+        document.documentElement.setAttribute("data-theme", "dark");
+        localStorage.setItem("theme", "dark");
+        themeToggleBtn.innerHTML = '<i class="fa fa-sun-o"></i>';
+    }
+}
+
+// 切换主题事件
+themeToggleBtn.addEventListener("click", () => {
+    let theme = document.documentElement.getAttribute("data-theme");
+    if (theme === "dark") {
+        document.documentElement.removeAttribute("data-theme");
+        localStorage.removeItem("theme");
+        themeToggleBtn.innerHTML = '<i class="fa fa-moon-o"></i>';
+    } else {
+        document.documentElement.setAttribute("data-theme", "dark");
+        localStorage.setItem("theme", "dark");
+        themeToggleBtn.innerHTML = '<i class="fa fa-sun-o"></i>';
+    }
+});
+
+// --- 现有代码 ---
 // 配置
 const wordListUrl = "CET4luan_2.json";
 
@@ -145,4 +180,5 @@ async function loadWords() {
 }
 
 // 初始化
+initializeTheme(); // 在加载单词前先初始化主题
 loadWords();
