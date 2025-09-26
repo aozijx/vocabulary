@@ -1,0 +1,230 @@
+/* 主卡片容器 */
+.card-container {
+  flex: 1; /* 占据可用空间 */
+  max-width: 28rem;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+}
+
+/* 标题样式 */
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: #2563eb;
+  margin-bottom: 1rem; /* 调整间距 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-title i {
+  margin-right: 0.5rem;
+}
+
+/* 搜索区域样式 */
+.search-area {
+  display: flex;
+  margin-bottom: 1.5rem;
+  gap: 0.5rem;
+}
+
+.search-input {
+  flex-grow: 1;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+}
+
+.search-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  background-color: #3b82f6;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.search-btn:hover {
+  background-color: #2563eb;
+}
+
+/* 单词卡片样式 */
+.word-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  min-height: 12.5rem;
+}
+
+/* 单词与级别行 */
+.word-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.word-text {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.word-level {
+  background-color: #dbeafe;
+  color: #1e40af;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+/* 音标样式 */
+.word-phonetic {
+  color: #6b7280;
+  font-style: italic;
+  margin-bottom: 0.75rem;
+}
+
+/* 词性样式 */
+.word-pos {
+  color: #7c3aed;
+  margin-bottom: 0.75rem;
+}
+
+/* 释义样式 */
+.word-def {
+  color: #374151;
+  margin-bottom: 1rem;
+}
+
+/* 短语样式 */
+.word-example {
+  color: #4b5563;
+  font-size: 0.875rem;
+  border-left: 2px solid #e5e7eb;
+  padding-left: 0.75rem;
+  max-height: 8rem;
+  overflow-y: auto;
+}
+
+.phrases-title {
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.word-example-item:not(:last-child) {
+  margin-bottom: 0.5rem;
+}
+
+/* 例句容器样式 */
+.sentences-container {
+  flex: 1.2;
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  align-self: stretch;
+}
+
+.sentences-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1rem;
+}
+
+.sentences-title i {
+  margin-right: 0.5rem;
+}
+
+.sentences-list {
+  max-height: 24rem;
+  overflow-y: auto;
+  font-size: 0.95rem;
+}
+
+.sentence-item {
+  margin-bottom: 1.25rem;
+}
+
+.sentence-en {
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.sentence-cn {
+  color: #6b7280;
+}
+
+/* 控制按钮区域 */
+.control-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.control-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.control-btn i {
+  margin-right: 0.5rem;
+}
+
+.prev-btn {
+  background-color: #e5e7eb;
+  color: #1f2937;
+}
+
+.prev-btn:hover {
+  background-color: #d1d5db;
+}
+
+.next-btn {
+  background-color: #3b82f6;
+  color: #ffffff;
+}
+
+.next-btn:hover {
+  background-color: #2563eb;
+}
+
+.next-btn i {
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+.progress-text {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
