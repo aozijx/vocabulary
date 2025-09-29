@@ -1,20 +1,21 @@
-// --- 新增：主题切换逻辑 ---
+// --- 主题切换逻辑 ---
 const themeToggleBtn = document.getElementById("theme-toggle");
 const currentTheme = localStorage.getItem("theme");
 const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+const themeIcon = themeToggleBtn.querySelector('i');
 
 // 初始化主题
 function initializeTheme() {
     if (currentTheme) {
         document.documentElement.setAttribute("data-theme", currentTheme);
         if (currentTheme === "dark") {
-            themeToggleBtn.innerHTML = '<i class="fa fa-sun-o"></i>';
+            if (themeIcon) themeIcon.className = 'fa fa-sun-o';
         }
     } else if (prefersDark) {
         // 如果用户系统设置为暗色，则默认使用暗色主题
         document.documentElement.setAttribute("data-theme", "dark");
         localStorage.setItem("theme", "dark");
-        themeToggleBtn.innerHTML = '<i class="fa fa-sun-o"></i>';
+        if (themeIcon) themeIcon.className = 'fa fa-sun-o';
     }
 }
 
@@ -23,28 +24,27 @@ themeToggleBtn.addEventListener("click", () => {
     let theme = document.documentElement.getAttribute("data-theme");
     if (theme === "dark") {
         document.documentElement.removeAttribute("data-theme");
-        localStorage.removeItem("theme");
-        themeToggleBtn.innerHTML = '<i class="fa fa-moon-o"></i>';
+        localStorage.setItem("theme", "light");
+        if (themeIcon) themeIcon.className = 'fa fa-moon-o';
     } else {
         document.documentElement.setAttribute("data-theme", "dark");
         localStorage.setItem("theme", "dark");
-        themeToggleBtn.innerHTML = '<i class="fa fa-sun-o"></i>';
+        if (themeIcon) themeIcon.className = 'fa fa-sun-o';
     }
 });
 
-// --- 现有代码 ---
 // 配置
-const wordListUrl = "CET4luan_2.json";
+const wordListUrl = "data/CET4luan_2.json";
 
 // DOM 元素
-const settingsBtn = document.getElementById("settingsBtn"); // 新增
-const settingsModal = document.getElementById("settingsModal"); // 新增
-const closeModalBtn = document.getElementById("closeModalBtn"); // 新增
+const settingsBtn = document.getElementById("settingsBtn");
+const settingsModal = document.getElementById("settingsModal");
+const closeModalBtn = document.getElementById("closeModalBtn");
 const wordCard = document.querySelector(".word-card");
 const sentencesList = document.querySelector(".sentences-list");
 const prevBtn = document.querySelector(".prev-btn");
 const nextBtn = document.querySelector(".next-btn");
-const randomBtn = document.getElementById("randomBtn"); // 新增
+const randomBtn = document.getElementById("randomBtn");
 const progressText = document.querySelector(".progress-text");
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
@@ -52,13 +52,15 @@ const searchBtn = document.getElementById("searchBtn");
 // 状态
 let words = [];
 let currentIndex = 0;
+let indexMap = [0]
 
-// --- 新增：播放音频函数 ---
+// --- 播放音频函数 ---
 function playAudio(word, type) {
     if (!word) return;
     const audioUrl = `https://dict.youdao.com/dictvoice?audio=${word}&type=${type}`;
     // type: 0-2美音, 1-英音
     const audio = new Audio(audioUrl);
+    audio.volume = 1;
     audio.play().catch((e) => console.error("音频播放失败:", e));
 }
 
@@ -83,67 +85,42 @@ function renderWord(index, shouldAutoplay = false) {
 
     // 1. 处理短语
     if (phrases && phrases.length > 0) {
-        phrasesHtml = phrases
-            .map(
-                (p) =>
-                    `<div class="word-example-item"><strong>${p.pContent}</strong>: ${p.pCn}</div>`
-            )
-            .join("");
+        phrasesHtml = phrases.map((p) =>
+            `<div class="list-item"><strong>${p.pContent}</strong>: ${p.pCn}</div>`
+        ).join("");
     }
 
-    // 2. 处理例句
+    // 处理例句
     if (sentences && sentences.length > 0) {
         sentencesHtml = sentences
             .map((sentence) => {
                 const sContent = sentence.sContent || "";
                 const sCn = sentence.sCn || "";
-                return `<div class="sentence-item">
+                return `<div class="list-item">
                   <p class="sentence-en">${sContent}</p>
                   <p class="sentence-cn">${sCn}</p>
                 </div>`;
-            })
-            .join("");
+            }).join("");
     }
 
-    wordCard.innerHTML = `
-      <div class="word-header">
-          <span class="word-text">${headWord}</span>
-          <span class="word-level">${level}</span>
-      </div>
-      
-      <!-- 新的发音和音标容器 -->
-      <div class="phonetic-container">
-        <span class="word-phonetic">${phonetic ? "/" + phonetic + "/" : ""
-        }</span>
-        <div class="pronounce-group">
-            <div class="pronounce-item" data-word="${headWord}" data-type="1" title="英式发音">
-                <span class="label">英</span>
-                <i class="fa fa-volume-up"></i>
-            </div>
-            <div class="pronounce-item" data-word="${headWord}" data-type="0" title="美式发音">
-                <span class="label">美</span>
-                <i class="fa fa-volume-up"></i>
-            </div>
-            <div class="pronounce-item">默认发音</div>
-        </div>
-      </div>
+    const wordHeader = document.querySelector(".word-header");
+    const Phonetic = document.querySelector(".word-phonetic");
+    const definitionContainer = document.querySelector(".definition-container");
+    const phraseList = document.querySelector(".phrase-list");
 
-      <div class="word-pos">${pos}</div>
-      <div class="word-def">${def}</div>
-      <div class="word-example">
-          ${phrasesHtml
-            ? '<div class="phrases-title">相关短语</div>' + phrasesHtml
-            : ""
-        }
-      </div>
-  `;
+    wordHeader.children[0].textContent = headWord;
+    wordHeader.children[1].textContent = level;
+    Phonetic.textContent = phonetic;
+    definitionContainer.children[0].textContent = pos;
+    definitionContainer.children[1].textContent = def;
+    phraseList.innerHTML = phrasesHtml;
 
-    // --- 修改：为新的发音项目绑定点击事件 ---
+    // --- 为新的发音项目绑定点击事件 ---
     wordCard.querySelectorAll(".pronounce-item").forEach((item) => {
         item.addEventListener("click", (e) => {
             // 事件可能在父元素或子元素上触发，我们从父元素获取数据
             const currentItem = e.currentTarget;
-            const wordToPlay = currentItem.getAttribute("data-word");
+            const wordToPlay = headWord;
             const type = currentItem.getAttribute("data-type");
             playAudio(wordToPlay, type);
         });
@@ -152,11 +129,12 @@ function renderWord(index, shouldAutoplay = false) {
     // 更新例句区域
     sentencesList.innerHTML = sentencesHtml || "<p>暂无相关例句</p>";
 
-    progressText.textContent = `${index + 1}/${words.length}`;
+    // 更新进度条文本
+    progressText.textContent = `${index + 1} / ${words.length}`;
     prevBtn.disabled = index === 0;
     nextBtn.disabled = index === words.length - 1;
 
-    // --- 新增：如果需要，则自动播放 ---
+    // --- 如果需要，则自动播放 ---
     if (shouldAutoplay) {
         playAudio(headWord, 2); // 默认自动播放美音
     }
@@ -167,17 +145,34 @@ function handleSearch() {
     const searchTerm = searchInput.value.trim().toLowerCase();
     if (!searchTerm) return;
 
-    const foundIndex = words.findIndex(
-        (word) => word.headWord.toLowerCase() === searchTerm
-    );
+    let targetIndex = -1;
 
-    if (foundIndex !== -1) {
-        currentIndex = foundIndex;
-        renderWord(currentIndex, true); // 搜索后自动播放
-        searchInput.value = "";
+    // 数字验证：如果是纯数字，直接作为索引处理
+    if (!isNaN(searchTerm) && searchTerm !== '') {
+        targetIndex = parseInt(searchTerm) - 1; // 索引减一
+
+        // 验证索引是否有效
+        if (targetIndex < 0 || targetIndex >= words.length) {
+            alert(`索引 ${searchTerm} 超出范围，有效范围：1-${words.length}`);
+            return;
+        }
     } else {
-        alert(`单词库中未找到 "${searchTerm}"`);
+        // 单词搜索
+        targetIndex = words.findIndex(
+            (word) => word.headWord.toLowerCase() === searchTerm
+        );
+
+        if (targetIndex === -1) {
+            alert(`单词库中未找到 "${searchTerm}"`);
+            return;
+        }
     }
+
+    // 统一处理搜索结果
+    indexMap.push(targetIndex);
+    currentIndex = targetIndex;
+    renderWord(currentIndex, true);
+    searchInput.value = "";
 }
 
 // --- 随机跳转函数 ---
@@ -190,20 +185,23 @@ function handleRandom() {
         newIndex = Math.floor(Math.random() * words.length);
     } while (newIndex === currentIndex);
 
+    indexMap.push(newIndex);
     currentIndex = newIndex;
-    renderWord(currentIndex, true); // 随机后自动播放
+    renderWord(newIndex, true); // 随机后自动播放
 }
 
 // 切换事件
 prevBtn.onclick = () => {
-    if (currentIndex > 0) {
-        currentIndex--;
+    if (indexMap.length > 0) {
+        currentIndex = indexMap.at(-2);
+        indexMap.pop();
         renderWord(currentIndex, true); // 点击后自动播放
     }
 };
 nextBtn.onclick = () => {
     if (currentIndex < words.length - 1) {
         currentIndex++;
+        indexMap.push(currentIndex);
         renderWord(currentIndex, true); // 点击后自动播放
     }
 };
@@ -211,28 +209,28 @@ nextBtn.onclick = () => {
 // 搜索与随机事件
 searchBtn.addEventListener("click", handleSearch);
 searchInput.addEventListener("keyup", (event) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !event.isComposing) {
         handleSearch();
     }
 });
-randomBtn.addEventListener("click", handleRandom); // 新增
+randomBtn.addEventListener("click", handleRandom);
 
 // --- 模态框控制逻辑 ---
 settingsBtn.addEventListener("click", () => {
     settingsModal.classList.add("open");
-    document.body.classList.add("modal-open"); // 新增：禁止背景滚动
+    document.body.classList.add("modal-open"); // 禁止背景滚动
 });
 
 closeModalBtn.addEventListener("click", () => {
     settingsModal.classList.remove("open");
-    document.body.classList.remove("modal-open"); // 新增：恢复背景滚动
+    document.body.classList.remove("modal-open"); // 恢复背景滚动
 });
 
 // 点击遮罩区域关闭模态框
 settingsModal.addEventListener("click", (event) => {
     if (event.target === settingsModal) {
         settingsModal.classList.remove("open");
-        document.body.classList.remove("modal-open"); // 新增：恢复背景滚动
+        document.body.classList.remove("modal-open"); // 恢复背景滚动
     }
 });
 

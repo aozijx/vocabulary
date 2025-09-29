@@ -1,0 +1,158 @@
+/* ==========================================================================
+   响应式样式 (移动端优先)
+   ========================================================================== */
+
+/* --- 1. 中等屏幕 / 平板 (<= 992px) --- */
+@media (max-width: 992px) {
+    .main-content {
+        /* 在平板尺寸下，将左右两栏改为垂直堆叠 */
+        flex-direction: column;
+        align-items: stretch;
+        /* 让子元素宽度撑满容器 */
+        max-width: 42rem;
+        /* 限制一个最大宽度，避免在宽屏平板上内容过宽 */
+        margin: 0 auto;
+        /* 使内容在较宽的屏幕上居中 */
+    }
+}
+
+/* --- 2. 竖屏平板 / 大型手机 (<= 768px) --- */
+@media (max-width: 768px) {
+    body {
+        padding: 0.5rem;
+        align-items: flex-start;
+        /* 内容从顶部开始，而不是垂直居中 */
+    }
+
+    .main-content {
+        max-width: 100%;
+        /* 在手机上占满全部宽度 */
+        gap: 1rem;
+    }
+
+    .content-box,
+    .modal-card {
+        padding: 1rem;
+        /* 减小所有卡片的内边距 */
+    }
+
+    .word-card {
+        min-height: auto;
+        /* 取消单词卡片的最小高度，使其自适应内容 */
+        padding: 1rem;
+    }
+
+    .word-text {
+        font-size: 1.75rem;
+        /* 调整单词字体大小 */
+    }
+
+    /* 调整浮动按钮，使其更贴近边缘 */
+    .theme-toggle-btn {
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+
+    .settings-btn {
+        bottom: 0.5rem;
+        right: 0.5rem;
+    }
+
+    /* 减小浮动按钮尺寸 */
+    .theme-toggle-btn,
+    .settings-btn {
+        width: 2.25rem;
+        height: 2.25rem;
+        font-size: 1.1rem;
+    }
+
+    /* 移除所有列表的高度限制和滚动条，让内容自然展开 */
+    .content-list {
+        max-height: none;
+        overflow-y: visible;
+    }
+}
+
+/* --- 3. 小型手机 (<= 480px) --- */
+@media (max-width: 480px) {
+    body {
+        padding: 0.25rem;
+        /* 进一步减小页面边距 */
+    }
+
+    .content-box {
+        padding: 0.75rem;
+        /* 进一步减小卡片内边距 */
+    }
+
+    /* 进一步减小字体 */
+    .word-text {
+        font-size: 1.5rem;
+    }
+
+    .word-phonetic,
+    .word-pos,
+    .word-def {
+        font-size: 0.875rem;
+    }
+
+    .sentence-en,
+    .sentence-cn {
+        font-size: 0.85rem;
+    }
+
+    /* 在最窄屏幕上，将发音部分垂直堆叠 */
+    .phonetic-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .pronounce-group {
+        width: 100%;
+    }
+
+    /* --- 修复并优化底部控制区布局 --- */
+    .control-area {
+        flex-wrap: wrap;
+        /* 允许内部元素换行 */
+        justify-content: center;
+        /* 整体居中 */
+        gap: 0.75rem;
+    }
+
+    .right-controls {
+        order: -1;
+        /* 将按钮组整体移动到进度条上方 */
+        width: 100%;
+        justify-content: space-between;
+        /* 让三个按钮两端对齐并均匀分布 */
+    }
+
+    .progress-text {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* 将按钮变为图标形式以节省空间 */
+    .control-btn {
+        padding: 0.5rem 0.75rem;
+    }
+
+    /* 隐藏 "下一个" 按钮的文字 */
+    #nextBtn {
+        font-size: 0;
+        /* 隐藏文字的技巧 */
+    }
+
+    #nextBtn i {
+        font-size: 0.875rem;
+        /* 恢复图标的大小 */
+        margin-left: 0;
+    }
+
+    /* 在最小屏幕上隐藏页脚，节省垂直空间 */
+    footer {
+        display: none;
+    }
+}

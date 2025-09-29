@@ -5,40 +5,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>四级单词</title>
-    <!-- 新增：默认 Favicon -->
-    <link rel="icon" href="halloween_hat_witch_horror_magic_icon.svg" />
+    <link rel="icon" href="src/img/halloween_hat_witch_horror_magic_icon.svg" />
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <style>
-        /* 定义 CSS 变量 */
-        :root {
-            --bg-color: #f9fafb;
-            --text-color-primary: #1f2937;
-            --text-color-secondary: #6b7280;
-            --card-bg-color: #ffffff;
-            --card-border-color: #e5e7eb;
-            --primary-color: #3b82f6;
-            --primary-color-hover: #2563eb;
-            --input-border-color: #d1d5db;
-            --input-focus-shadow: rgba(59, 130, 246, 0.4);
-            --btn-secondary-bg: #e5e7eb;
-            --btn-secondary-hover-bg: #d1d5db;
-        }
-
-        [data-theme="dark"] {
-            --bg-color: #111827;
-            --text-color-primary: #f3f4f6;
-            --text-color-secondary: #9ca3af;
-            --card-bg-color: #1f2937;
-            --card-border-color: #374151;
-            --primary-color: #60a5fa;
-            --primary-color-hover: #3b82f6;
-            --input-border-color: #4b5563;
-            --input-focus-shadow: rgba(96, 165, 250, 0.4);
-            --btn-secondary-bg: #374151;
-            --btn-secondary-hover-bg: #4b5563;
-        }
-
-        /* 保留在HTML中的基本样式，防止页面加载时布局错乱 */
         * {
             margin: 0;
             padding: 0;
@@ -55,6 +24,7 @@
             align-items: center;
             justify-content: center;
             padding: 1rem;
+            transition: all 0.5s;
         }
 
         .main-content {
@@ -63,6 +33,41 @@
             gap: 1.5rem;
             width: 100%;
             max-width: 64rem;
+            transition: all 0.7s;
+        }
+
+        .page-title {
+            text-align: center;
+            color: var(--primary-color-hover);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        /* 卡片容器 */
+        .card-container {
+            flex: 1;
+            background-color: var(--card-bg-color);
+            border: 1px solid var(--card-border-color);
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            align-self: stretch;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color-hover);
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--card-border-color);
+            padding-bottom: 1rem;
+        }
+
+        .page-title i,
+        .card-title i,
+        .control-btn i {
+            margin-right: 0.5rem;
         }
 
         footer {
@@ -74,115 +79,29 @@
         }
 
         footer a {
-            text-decoration: none;
             color: inherit;
-        }
-
-        /* 新增：模态框样式 */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal-card {
-            background-color: var(--card-bg-color);
-            border: 1px solid var(--card-border-color);
-            border-radius: 0.5rem;
-            overflow: hidden;
-            width: 90%;
-            max-width: 32rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-header {
-            background-color: var(--primary-color);
-            color: #fff;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h2 {
-            margin: 0;
-            font-size: 1.25rem;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .modal-content {
-            padding: 1rem;
-        }
-
-        .modal-content h3 {
-            margin-top: 0;
-            font-size: 1.125rem;
-            border-bottom: 1px solid var(--card-border-color);
-            padding-bottom: 0.5rem;
-        }
-
-        .modal-content ul {
-            list-style: none;
-            padding: 0;
-            margin: 0.5rem 0;
-        }
-
-        .modal-content li {
-            margin: 0.5rem 0;
-        }
-
-        .modal-content a {
-            text-decoration: none;
-            color: var(--text-color-primary);
-            transition: color 0.3s;
-        }
-
-        .modal-content a:hover {
-            color: var(--primary-color);
-        }
-
-        .list-divider {
-            margin: 1.5rem 0 0.5rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 0.875rem;
-            color: var(--text-color-secondary);
         }
     </style>
     <!-- 引入外部样式表 -->
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="src/styles/style.css" />
     <!-- 引入移动端适配样式表 -->
-    <link rel="stylesheet" href="mobile.css" />
+    <link rel="stylesheet" href="src/styles/mobile.css" />
 </head>
 
 <body>
     <!-- 暗黑模式切换按钮 -->
-    <button id="theme-toggle" class="theme-toggle-btn">
+    <button id="theme-toggle" class="toggle-btn theme-toggle">
         <i class="fa fa-moon-o"></i>
     </button>
 
     <div class="main-content">
         <div class="card-container">
             <!-- 页面标题 -->
-            <h1 class="page-title"><i class="fa fa-book"></i>四级单词记忆</h1>
+            <h1 class="page-title"><i class="fa fa-book"></i>单词本</h1>
 
             <!-- 搜索区域 -->
             <div class="search-area">
-                <input type="text" id="searchInput" class="search-input" placeholder="输入单词快速跳转..." />
+                <input type="text" id="searchInput" class="search-input" placeholder="输入单词或索引跳转..." />
                 <button id="searchBtn" class="search-btn">
                     <i class="fa fa-search"></i>
                 </button>
@@ -190,31 +109,64 @@
 
             <!-- 单词卡片 -->
             <div class="word-card">
-                <!-- 内容将由JS动态填充 -->
-                <p>正在加载单词...</p>
+                <div class="word-header">
+                    <span class="word-text"></span>
+                    <span class="word-level"></span>
+                </div>
+
+                <!-- 发音和音标容器 -->
+                <div class="phonetic-container">
+                    <span class="word-phonetic"></span>
+                    <div class="pronounce-group">
+                        <div class="pronounce-item" data-word="" data-type="1" title="英式发音">
+                            <span class="label">英</span>
+                            <i class="fa fa-volume-up"></i>
+                        </div>
+                        <div class="pronounce-item" data-word="" data-type="0" title="美式发音">
+                            <span class="label">美</span>
+                            <i class="fa fa-volume-up"></i>
+                        </div>
+                        <div style="color: var(--text-color-secondary);">默认美音</div>
+                    </div>
+                </div>
+
+                <!-- 词性与释义的容器 -->
+                <div class="definition-container">
+                    <div class="word-pos"></div>
+                    <div class="word-def"></div>
+                </div>
+            </div>
+
+            <!-- 短语 -->
+            <div class="phrase">
+                <h2 class="card-title"><i class="fa fa-link"></i>相关短语</h2>
+                <div class="phrase-list"></div>
             </div>
 
             <!-- 控制按钮区域 -->
             <div class="control-area">
                 <button class="control-btn prev-btn">
-                    <i class="fa fa-arrow-left"></i>上一个
+                    <i class="fa fa-arrow-left"></i>
+                    <span>上一个</span>
                 </button>
-                <span class="progress-text">0/0</span>
+                <span class="progress-text">0 / 0</span>
                 <!-- 右侧按钮组 -->
                 <div class="right-controls">
                     <button id="randomBtn" class="control-btn">
-                        <i class="fa fa-random"></i>随机
+                        <i class="fa fa-random"></i>
+                        <span>随机</span>
                     </button>
                     <button class="control-btn next-btn">
-                        下一个<i class="fa fa-arrow-right"></i>
+                        <span>下一个</span>
+                        <i class="fa fa-arrow-right"></i>
                     </button>
                 </div>
             </div>
         </div>
 
         <!-- 例句容器 -->
-        <div class="sentences-container">
-            <h2 class="sentences-title">
+        <div class="card-container">
+            <h2 class="card-title">
                 <i class="fa fa-comments-o"></i> 相关例句
             </h2>
             <div class="sentences-list">
@@ -224,54 +176,42 @@
     </div>
 
     <!-- 设置按钮 -->
-    <button id="settingsBtn" class="settings-btn">
+    <button id="settingsBtn" class="toggle-btn settings-btn">
         <i class="fa fa-cog"></i>
     </button>
 
-    <!-- 新增：设置模态框 -->
+    <!-- 模态框 -->
     <div id="settingsModal" class="modal-overlay">
-        <!-- 1. 将关闭按钮移到卡片外部 -->
         <button id="closeModalBtn" class="close-btn">&times;</button>
 
-        <div class="modal-card">
-            <div class="modal-header">
-                <h2>设置</h2>
-                <!-- 关闭按钮已从此移除 -->
-            </div>
+        <div class="card-container modal-card">
             <div class="modal-content">
-                <h3>词书列表</h3>
+                <h3 class="setting-header">词书列表</h3>
                 <ul>
-                    <li><a href="#" class="active">大学英语四级核心词汇</a></li>
-                    <li>
-                        <a href="#" class="disabled">大学英语六级核心词汇 (待添加)</a>
-                    </li>
-                    <li><a href="#" class="disabled">考研英语核心词汇 (待添加)</a></li>
+                    <li class="active"><button>大学英语四级核心词汇</button></li>
+                    <li class="disabled"><button>大学英语六级核心词汇 (待添加)</button></li>
+                    <li class="disabled"><button>考研英语核心词汇 (待添加)</button></li>
                 </ul>
 
-                <!-- 2. 新增静态书籍链接列表 -->
-                <h3 class="list-divider">链接</h3>
+                <!-- 静态书籍链接列表 -->
+                <h3 class="setting-header">链接</h3>
                 <ul>
-                    <li>
-                        <a href="https://gitee.com/zhangchang521/english-word" target="_blank"
-                            rel="noopener noreferrer">
-                            Gitee 数据 <i class="fa fa-external-link"></i>
-                        </a>
+                    <li><a href="https://gitee.com/zhangchang521/english-word" target="_blank" rel="noopener noreferrer"
+                            rel="noopener noreferrer"><i class="fa fa-github"></i>Gitee 数据
+                        </a><i class="fa fa-external-link"></i>
                     </li>
                     <li>
                         <a href="https://github.com/mahavivo/english-wordlists" target="_blank"
-                            rel="noopener noreferrer">
-                            Github 数据 <i class="fa fa-external-link"></i>
-                        </a>
+                            rel="noopener noreferrer" rel="noopener noreferrer"><i class="fa fa-github"></i>Github 数据
+                        </a><i class="fa fa-external-link"></i>
                     </li>
-                    <li>
-                        <a href="https://github.com/KyleBing/english-vocabulary" target="_blank"
-                            rel="noopener noreferrer">Github 数据 <i class="fa fa-external-link"></i>
-                        </a>
+                    <li><a href="https://github.com/KyleBing/english-vocabulary" target="_blank"
+                            rel="noopener noreferrer" rel="noopener noreferrer"><i class="fa fa-github"></i>Github 数据
+                        </a><i class="fa fa-external-link"></i>
                     </li>
-                    <li>
-                        <a href="https://github.com/KyleBing/vocabulary" target="_blank" rel="noopener noreferrer">"蚕食"
-                            应用 <i class="fa fa-external-link"></i>
-                        </a>
+                    <li><a href="https://github.com/KyleBing/vocabulary" target="_blank" rel="noopener noreferrer">
+                            <i></i>"蚕食" 应用
+                        </a><i class="fa fa-external-link"></i>
                     </li>
                 </ul>
             </div>
@@ -279,12 +219,11 @@
     </div>
 
     <footer>
-        <span>&copy; 2025 单词记忆</span>
-        <span><a
-                href="https://gitee.com/zhangchang521/english-word#https://gitee.com/link?target=http%3A%2F%2Fydschool-online.nos.netease.com%2F1524052539052_CET4luan_2.zip">词表</a></span>
+        &copy; 2025 单词本 <a
+            href="https://gitee.com/zhangchang521/english-word#https://gitee.com/link?target=http%3A%2F%2Fydschool-online.nos.netease.com%2F1524052539052_CET4luan_2.zip"
+            target="_blank" rel="noopener noreferrer">词表</a>
     </footer>
-    <!-- 引入外部JavaScript文件，defer属性确保在HTML解析完毕后执行 -->
-    <script src="script.js" defer></script>
+    <script src="src/js/script.js" defer></script>
 </body>
 
 </html>
