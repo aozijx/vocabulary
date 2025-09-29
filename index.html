@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>四级单词</title>
+    <title>单词本</title>
     <link rel="icon" href="src/img/halloween_hat_witch_horror_magic_icon.svg" />
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <style>
@@ -12,8 +12,8 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-                "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Consolas", "Segoe UI",
+                Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
         body {
@@ -24,7 +24,7 @@
             align-items: center;
             justify-content: center;
             padding: 1rem;
-            transition: all 0.5s;
+            transition: background-color 0.5s ease-out;
         }
 
         .main-content {
@@ -90,7 +90,7 @@
 
 <body>
     <!-- 暗黑模式切换按钮 -->
-    <button id="theme-toggle" class="toggle-btn theme-toggle">
+    <button id="theme-toggle" class="toggle-btn theme-toggle" title="切换" type="button">
         <i class="fa fa-moon-o"></i>
     </button>
 
@@ -102,7 +102,7 @@
             <!-- 搜索区域 -->
             <div class="search-area">
                 <input type="text" id="searchInput" class="search-input" placeholder="输入单词或索引跳转..." />
-                <button id="searchBtn" class="search-btn">
+                <button id="searchBtn" class="search-btn" title="搜索" type="button">
                     <i class="fa fa-search"></i>
                 </button>
             </div>
@@ -117,16 +117,16 @@
                 <!-- 发音和音标容器 -->
                 <div class="phonetic-container">
                     <span class="word-phonetic"></span>
-                    <div class="pronounce-group">
-                        <div class="pronounce-item" data-word="" data-type="1" title="英式发音">
+                    <div class="pronounce-group" data-word="">
+                        <div class="pronounce-item" data-type="1" title="英式发音">
                             <span class="label">英</span>
                             <i class="fa fa-volume-up"></i>
                         </div>
-                        <div class="pronounce-item" data-word="" data-type="0" title="美式发音">
+                        <div class="pronounce-item" data-type="0" title="美式发音">
                             <span class="label">美</span>
                             <i class="fa fa-volume-up"></i>
                         </div>
-                        <div style="color: var(--text-color-secondary);">默认美音</div>
+                        <div style="color: var(--text-color-secondary)">默认美音</div>
                     </div>
                 </div>
 
@@ -145,18 +145,18 @@
 
             <!-- 控制按钮区域 -->
             <div class="control-area">
-                <button class="control-btn prev-btn">
+                <button class="control-btn prev-btn" title="back" type="button">
                     <i class="fa fa-arrow-left"></i>
                     <span>上一个</span>
                 </button>
                 <span class="progress-text">0 / 0</span>
                 <!-- 右侧按钮组 -->
                 <div class="right-controls">
-                    <button id="randomBtn" class="control-btn">
+                    <button id="randomBtn" class="control-btn" title="random" type="button">
                         <i class="fa fa-random"></i>
                         <span>随机</span>
                     </button>
-                    <button class="control-btn next-btn">
+                    <button class="control-btn next-btn" title="next" type="button">
                         <span>下一个</span>
                         <i class="fa fa-arrow-right"></i>
                     </button>
@@ -166,9 +166,7 @@
 
         <!-- 例句容器 -->
         <div class="card-container">
-            <h2 class="card-title">
-                <i class="fa fa-comments-o"></i> 相关例句
-            </h2>
+            <h2 class="card-title"><i class="fa fa-comments-o"></i> 相关例句</h2>
             <div class="sentences-list">
                 <p>请先加载单词...</p>
             </div>
@@ -176,42 +174,45 @@
     </div>
 
     <!-- 设置按钮 -->
-    <button id="settingsBtn" class="toggle-btn settings-btn">
+    <button id="settingsBtn" class="toggle-btn settings-btn" title="设置" type="button">
         <i class="fa fa-cog"></i>
     </button>
 
     <!-- 模态框 -->
     <div id="settingsModal" class="modal-overlay">
-        <button id="closeModalBtn" class="close-btn">&times;</button>
-
+        <button id="closeModalBtn" class="close-btn" title="close" type="button">
+            &times;
+        </button>
         <div class="card-container modal-card">
             <div class="modal-content">
                 <h3 class="setting-header">词书列表</h3>
                 <ul>
-                    <li class="active"><button>大学英语四级核心词汇</button></li>
-                    <li class="disabled"><button>大学英语六级核心词汇 (待添加)</button></li>
-                    <li class="disabled"><button>考研英语核心词汇 (待添加)</button></li>
+                    <li class="active"><button type="button">大学英语四级核心词汇</button></li>
+                    <li class="disabled"><button type="button">大学英语六级核心词汇 (待添加)</button></li>
+                    <li class="disabled"><button type="button">考研英语核心词汇 (待添加)</button></li>
                 </ul>
 
                 <!-- 静态书籍链接列表 -->
                 <h3 class="setting-header">链接</h3>
                 <ul>
-                    <li><a href="https://gitee.com/zhangchang521/english-word" target="_blank" rel="noopener noreferrer"
-                            rel="noopener noreferrer"><i class="fa fa-github"></i>Gitee 数据
-                        </a><i class="fa fa-external-link"></i>
+                    <li>
+                        <a href="https://gitee.com/zhangchang521/english-word" target="_blank" rel="noopener noreferrer"
+                            rel="noopener noreferrer"><i class="fa fa-github"></i>Gitee 数据 </a><i
+                            class="fa fa-external-link"></i>
                     </li>
                     <li>
                         <a href="https://github.com/mahavivo/english-wordlists" target="_blank"
                             rel="noopener noreferrer" rel="noopener noreferrer"><i class="fa fa-github"></i>Github 数据
                         </a><i class="fa fa-external-link"></i>
                     </li>
-                    <li><a href="https://github.com/KyleBing/english-vocabulary" target="_blank"
+                    <li>
+                        <a href="https://github.com/KyleBing/english-vocabulary" target="_blank"
                             rel="noopener noreferrer" rel="noopener noreferrer"><i class="fa fa-github"></i>Github 数据
                         </a><i class="fa fa-external-link"></i>
                     </li>
-                    <li><a href="https://github.com/KyleBing/vocabulary" target="_blank" rel="noopener noreferrer">
-                            <i></i>"蚕食" 应用
-                        </a><i class="fa fa-external-link"></i>
+                    <li>
+                        <a href="https://github.com/KyleBing/vocabulary" target="_blank" rel="noopener noreferrer">
+                            <i></i>"蚕食" 应用 </a><i class="fa fa-external-link"></i>
                     </li>
                 </ul>
             </div>
@@ -219,9 +220,10 @@
     </div>
 
     <footer>
-        &copy; 2025 单词本 <a
-            href="https://gitee.com/zhangchang521/english-word#https://gitee.com/link?target=http%3A%2F%2Fydschool-online.nos.netease.com%2F1524052539052_CET4luan_2.zip"
+        &copy; 2025 单词本
+        <a href="https://gitee.com/zhangchang521/english-word#https://gitee.com/link?target=http%3A%2F%2Fydschool-online.nos.netease.com%2F1524052539052_CET4luan_2.zip"
             target="_blank" rel="noopener noreferrer">词表</a>
+        <a href="https://github.com/aozijx/vocabulary" target="_blank" rel="noopener noreferrer">Github</a>
     </footer>
     <script src="src/js/script.js" defer></script>
 </body>

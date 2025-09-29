@@ -91,11 +91,40 @@ body.modal-open {
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
         0 10px 10px -5px rgba(0, 0, 0, 0.04);
     align-self: center;
+    transform: translateY(100%);
+    opacity: 0;
+    animation: slideOut 0.3s ease-out forwards;
+}
+
+.modal-card.in {
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+    from { 
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to { 
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from { 
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to { 
+        transform: translateY(50px);
+        opacity: 0;
+    }
 }
 
 .setting-header {
     border-radius: 0.6rem;
-    margin: 1rem 0;
+    margin: 1rem 0 1rem -0.5rem;
     background-color: var(--primary-color);
     color: var(--text-color-primary);
     padding: 0.7rem;
@@ -136,6 +165,7 @@ body.modal-open {
     align-items: center;
     border-radius: 0.5rem;
     padding: 0.75rem;
+    cursor: pointer;
 }
 
 .modal-content ul li a {
@@ -290,8 +320,9 @@ body.modal-open {
 }
 
 .definition-container {
-    display: flex;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.2rem;
 }
 
 /* 词性样式 */

@@ -39,8 +39,11 @@ const wordListUrl = "data/CET4luan_2.json";
 // DOM 元素
 const settingsBtn = document.getElementById("settingsBtn");
 const settingsModal = document.getElementById("settingsModal");
+const modalCard = document.querySelector(".modal-card");
 const closeModalBtn = document.getElementById("closeModalBtn");
 const wordCard = document.querySelector(".word-card");
+const definitionContainer = document.querySelector(".definition-container");
+const wordPronounce = wordCard.querySelector(".pronounce-group");
 const sentencesList = document.querySelector(".sentences-list");
 const prevBtn = document.querySelector(".prev-btn");
 const nextBtn = document.querySelector(".next-btn");
@@ -52,7 +55,7 @@ const searchBtn = document.getElementById("searchBtn");
 // 状态
 let words = [];
 let currentIndex = 0;
-let indexMap = [0]
+let indexMap = [0];
 
 // --- 播放音频函数 ---
 function playAudio(word, type) {
@@ -64,31 +67,85 @@ function playAudio(word, type) {
     audio.play().catch((e) => console.error("音频播放失败:", e));
 }
 
+function smartExtractLevel(wordId) {
+    if (!wordId) return "unknow";
+
+    const str = wordId.toString().toUpperCase();
+
+    // 定义匹配规则和优先级
+    const rules = [
+        { keywords: ['CET4', 'CET-4', '四级'], level: 'CET4' },
+        { keywords: ['CET6', 'CET-6', '六级'], level: 'CET6' },
+        { keywords: ['TOEFL', '托福'], level: 'TOEFL' },
+        { keywords: ['IELTS', '雅思'], level: 'IELTS' },
+        { keywords: ['GRE'], level: 'GRE' },
+        { keywords: ['SAT'], level: 'SAT' },
+        { keywords: ['GMAT'], level: 'GMAT' },
+        { keywords: ['TEM4', 'TEM-4'], level: 'TEM4' },
+        { keywords: ['TEM8', 'TEM-8'], level: 'TEM8' }
+    ];
+
+    for (const rule of rules) {
+        for (const keyword of rule.keywords) {
+            if (str.includes(keyword.toUpperCase())) {
+                return rule.level;
+            }
+        }
+    }
+
+    // 如果都没匹配到，使用默认值
+    return "unknow";
+}
+
 // 渲染单词卡片
 function renderWord(index, shouldAutoplay = false) {
     // 添加 shouldAutoplay 参数
     if (!words.length) return;
     const word = words[index];
-    // 兼容你的数据结构，需根据实际字段调整
-    const headWord = word.headWord || word.word || "";
-    const level = word.level || "4级";
-    const phonetic = word.content?.word?.content?.usphone || word.phonetic || "";
-    const pos =
-        word.content?.word?.content?.syno?.synos?.[0]?.pos || word.pos || "";
-    const def = word.content?.word?.content?.trans?.[0]?.tranCn || word.def || "";
 
-    // --- 分别处理短语和例句 ---
+    // 兼容你的数据结构，需根据实际字段调整
+    const headWord = word.headWord || word.content.word.wordHead || "hiner";
+    const level = smartExtractLevel(word.content.word.wordId) || "unknow";
+    const phonetic = word.content?.word?.content?.usphone || "";
+    const definition = word.content?.word?.content?.syno?.synos || "";
     const phrases = word.content?.word?.content?.phrase?.phrases;
     const sentences = word.content?.word?.content?.sentence?.sentences;
+
+    // --- 分别处理释义，短语和例句 ---
+    let definitionHtml = "";
     let phrasesHtml = "";
     let sentencesHtml = "";
 
-    // 1. 处理短语
+    const wordHeader = document.querySelector(".word-header");
+    const Phonetic = document.querySelector(".word-phonetic");
+    const phraseList = document.querySelector(".phrase-list");
+
+    wordHeader.children[0].textContent = headWord;
+    wordPronounce.setAttribute("data-word", headWord);
+    wordHeader.children[1].textContent = level;
+    Phonetic.textContent = phonetic;
+    phraseList.innerHTML = phrasesHtml;
+
+    // 释义
+    if (definition && definition.length > 0) {
+        definitionHtml = definition
+            .map((item) => {
+                if (!item) return '';
+                return `<div class="list-item">
+                  <span class="sentence-en">${item.pos}.</span>
+                  <span class="sentence-cn">${item.tran}</span>
+                </div>`;
+            }).join("");
+    }
+    definitionContainer.innerHTML = definitionHtml || "<p>暂无相关翻译</p>";
+
+    // 处理短语
     if (phrases && phrases.length > 0) {
         phrasesHtml = phrases.map((p) =>
             `<div class="list-item"><strong>${p.pContent}</strong>: ${p.pCn}</div>`
         ).join("");
     }
+    phraseList.innerHTML = phrasesHtml || "<p>暂无相关短语</p>";
 
     // 处理例句
     if (sentences && sentences.length > 0) {
@@ -102,30 +159,6 @@ function renderWord(index, shouldAutoplay = false) {
                 </div>`;
             }).join("");
     }
-
-    const wordHeader = document.querySelector(".word-header");
-    const Phonetic = document.querySelector(".word-phonetic");
-    const definitionContainer = document.querySelector(".definition-container");
-    const phraseList = document.querySelector(".phrase-list");
-
-    wordHeader.children[0].textContent = headWord;
-    wordHeader.children[1].textContent = level;
-    Phonetic.textContent = phonetic;
-    definitionContainer.children[0].textContent = pos;
-    definitionContainer.children[1].textContent = def;
-    phraseList.innerHTML = phrasesHtml;
-
-    // --- 为新的发音项目绑定点击事件 ---
-    wordCard.querySelectorAll(".pronounce-item").forEach((item) => {
-        item.addEventListener("click", (e) => {
-            // 事件可能在父元素或子元素上触发，我们从父元素获取数据
-            const currentItem = e.currentTarget;
-            const wordToPlay = headWord;
-            const type = currentItem.getAttribute("data-type");
-            playAudio(wordToPlay, type);
-        });
-    });
-
     // 更新例句区域
     sentencesList.innerHTML = sentencesHtml || "<p>暂无相关例句</p>";
 
@@ -140,39 +173,49 @@ function renderWord(index, shouldAutoplay = false) {
     }
 }
 
+// --- 为新的发音项目绑定点击事件 ---
+wordPronounce.addEventListener("click", (e) => {
+    // 事件可能在父元素或子元素上触发，我们从父元素获取数据
+    const currentItem = e.currentTarget;
+    const wordToPlay = currentItem.getAttribute("data-word")
+    const type = currentItem.getAttribute("data-type");
+    playAudio(wordToPlay, type);
+});
+
 // 执行搜索的函数
-function handleSearch() {
-    const searchTerm = searchInput.value.trim().toLowerCase();
-    if (!searchTerm) return;
+function handleSearch(wordOrIndex) {
+    if (!wordOrIndex) return;
 
-    let targetIndex = -1;
+    const targetIndex = getValidatedIndex(wordOrIndex);
 
-    // 数字验证：如果是纯数字，直接作为索引处理
-    if (!isNaN(searchTerm) && searchTerm !== '') {
-        targetIndex = parseInt(searchTerm) - 1; // 索引减一
+    if (targetIndex === -1) return;
 
-        // 验证索引是否有效
-        if (targetIndex < 0 || targetIndex >= words.length) {
-            alert(`索引 ${searchTerm} 超出范围，有效范围：1-${words.length}`);
-            return;
-        }
-    } else {
-        // 单词搜索
-        targetIndex = words.findIndex(
-            (word) => word.headWord.toLowerCase() === searchTerm
-        );
-
-        if (targetIndex === -1) {
-            alert(`单词库中未找到 "${searchTerm}"`);
-            return;
-        }
-    }
-
-    // 统一处理搜索结果
     indexMap.push(targetIndex);
     currentIndex = targetIndex;
     renderWord(currentIndex, true);
     searchInput.value = "";
+}
+
+function getValidatedIndex(input) {
+    // 处理数字索引
+    if (!isNaN(input) && input !== '') {
+        const index = parseInt(input) - 1;
+        if (index < 0 || index >= words.length) {
+            alert(`索引 ${input} 超出范围，有效范围：1-${words.length}`);
+            return -1;
+        }
+        return index;
+    }
+
+    // 处理单词搜索
+    const index = words.findIndex(item =>
+        item.headWord.toLowerCase() === input.toLowerCase()
+    );
+    if (index === -1) {
+        alert(`单词库中未找到 "${input}"`);
+        return -1;
+    }
+    return index;
 }
 
 // --- 随机跳转函数 ---
@@ -190,6 +233,20 @@ function handleRandom() {
     renderWord(newIndex, true); // 随机后自动播放
 }
 
+// 搜索与随机事件
+function performSearch() {
+    const searchTerm = searchInput.value.trim().toLowerCase();
+    handleSearch(searchTerm);
+}
+searchBtn.addEventListener("click", () => {
+    performSearch()
+});
+searchInput.addEventListener("keyup", (event) => {
+    if (event.key === "Enter" && !event.isComposing) {
+        performSearch()
+    }
+});
+
 // 切换事件
 prevBtn.onclick = () => {
     if (indexMap.length > 0) {
@@ -205,32 +262,29 @@ nextBtn.onclick = () => {
         renderWord(currentIndex, true); // 点击后自动播放
     }
 };
-
-// 搜索与随机事件
-searchBtn.addEventListener("click", handleSearch);
-searchInput.addEventListener("keyup", (event) => {
-    if (event.key === "Enter" && !event.isComposing) {
-        handleSearch();
-    }
-});
 randomBtn.addEventListener("click", handleRandom);
 
-// --- 模态框控制逻辑 ---
 settingsBtn.addEventListener("click", () => {
     settingsModal.classList.add("open");
-    document.body.classList.add("modal-open"); // 禁止背景滚动
+    modalCard.classList.add("in");
+    document.body.classList.add("modal-open");
 });
 
 closeModalBtn.addEventListener("click", () => {
-    settingsModal.classList.remove("open");
-    document.body.classList.remove("modal-open"); // 恢复背景滚动
+    modalCard.classList.remove("in");
+    setTimeout(() => {
+        settingsModal.classList.remove("open");
+    }, 300);
+    document.body.classList.remove("modal-open");
 });
 
-// 点击遮罩区域关闭模态框
 settingsModal.addEventListener("click", (event) => {
     if (event.target === settingsModal) {
-        settingsModal.classList.remove("open");
-        document.body.classList.remove("modal-open"); // 恢复背景滚动
+        modalCard.classList.remove("in");
+        setTimeout(() => {
+            settingsModal.classList.remove("open");
+        }, 300);
+        document.body.classList.remove("modal-open");
     }
 });
 
@@ -257,3 +311,13 @@ async function loadWords() {
 // 初始化
 initializeTheme(); // 在加载单词前先初始化主题
 loadWords();
+
+const modalLi = modalCard.querySelectorAll("li");
+for (let i = 0; i < modalLi.length; i++) {
+    const aTag = modalLi[i].querySelector('a');
+    modalLi[i].addEventListener("click", () => {
+        aTag.click();
+    })
+
+}
+
