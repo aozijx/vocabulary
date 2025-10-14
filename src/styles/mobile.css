@@ -9,6 +9,9 @@
         max-width: 100%;
         padding: 0 1rem;
     }
+    .control-btn span {
+        display: none;
+    }
 }
 
 /* --- 2. 竖屏平板 / 大型手机 (<= 768px) --- */
@@ -86,6 +89,10 @@
     .search-btn {
         padding: 0.5rem 0.75rem;
         font-size: 0.875rem;
+    }
+
+    .control-btn span {
+        display: inline;
     }
 
     /* 减少例句列表的最大高度 */

@@ -34,7 +34,7 @@ themeToggleBtn.addEventListener("click", () => {
 });
 
 // 配置
-const wordListUrl = "data/CET4luan_2.json";
+const wordListUrl = { CET4: "data/CET4luan_2.json" };
 
 // DOM 元素
 const settingsBtn = document.getElementById("settingsBtn");
@@ -63,7 +63,6 @@ function playAudio(word, type) {
     const audioUrl = `https://dict.youdao.com/dictvoice?audio=${word}&type=${type}`;
     // type: 0-2美音, 1-英音
     const audio = new Audio(audioUrl);
-    audio.volume = 1;
     audio.play().catch((e) => console.error("音频播放失败:", e));
 }
 
@@ -97,33 +96,65 @@ function smartExtractLevel(wordId) {
     return "unknow";
 }
 
+function extractWordData(word) {
+    try {
+        // 检查输入是否有效
+        if (!word || typeof word !== 'object') throw new Error('Invalid word data provided');
+
+        // 安全提取数值
+        const headWord = word.headWord || word.content?.word?.wordHead || "unknow";
+        const level = smartExtractLevel(word.content.word.wordId) || "unknown";
+        const phonetic = word.content?.word?.content?.usphone || "";
+        const definition = word.content?.word?.content?.syno?.synos || "";
+        const phrases = word.content?.word?.content?.phrase?.phrases || [];
+        const sentences = word.content?.word?.content?.sentence?.sentences || [];
+
+        return {
+            headWord,
+            level,
+            phonetic,
+            definition,
+            phrases,
+            sentences,
+            extractedAt: new Date().toISOString()
+        };
+
+    } catch (error) {
+        console.error('Error extracting word data:', error);
+        return {
+            headWord: "unknow",
+            level: "unknown",
+            phonetic: "",
+            definition: "",
+            phrases: [],
+            sentences: [],
+            error: error.message
+        };
+    }
+}
+
 // 渲染单词卡片
 function renderWord(index, shouldAutoplay = false) {
-    // 添加 shouldAutoplay 参数
     if (!words.length) return;
     const word = words[index];
+    const { headWord, level, phonetic, definition, phrases, sentences } = extractWordData(word);
 
-    // 兼容你的数据结构，需根据实际字段调整
-    const headWord = word.headWord || word.content.word.wordHead || "hiner";
-    const level = smartExtractLevel(word.content.word.wordId) || "unknow";
-    const phonetic = word.content?.word?.content?.usphone || "";
-    const definition = word.content?.word?.content?.syno?.synos || "";
-    const phrases = word.content?.word?.content?.phrase?.phrases;
-    const sentences = word.content?.word?.content?.sentence?.sentences;
+    // 如果需要JSON字符串
+    // const result = extractWordData(word);
+    // const jsonResult = JSON.stringify(result, null, 2);
+    // console.log(jsonResult);
 
     // --- 分别处理释义，短语和例句 ---
     let definitionHtml = "";
     let phrasesHtml = "";
     let sentencesHtml = "";
 
-    const wordHeader = document.querySelector(".word-header");
-    const Phonetic = document.querySelector(".word-phonetic");
     const phraseList = document.querySelector(".phrase-list");
 
-    wordHeader.children[0].textContent = headWord;
+    wordCard.querySelector(".word-text").textContent = headWord;
     wordPronounce.setAttribute("data-word", headWord);
-    wordHeader.children[1].textContent = level;
-    Phonetic.textContent = phonetic;
+    wordCard.querySelector(".word-level").textContent = level;
+    wordCard.querySelector(".word-phonetic").textContent = phonetic;
     phraseList.innerHTML = phrasesHtml;
 
     // 释义
@@ -177,8 +208,10 @@ function renderWord(index, shouldAutoplay = false) {
 wordPronounce.addEventListener("click", (e) => {
     // 事件可能在父元素或子元素上触发，我们从父元素获取数据
     const currentItem = e.currentTarget;
+    // 找到点击目标所在的直接子元素
+    const directChild = e.target.closest('.pronounce-item');
     const wordToPlay = currentItem.getAttribute("data-word")
-    const type = currentItem.getAttribute("data-type");
+    const type = directChild.getAttribute("data-type");
     playAudio(wordToPlay, type);
 });
 
@@ -247,6 +280,48 @@ searchInput.addEventListener("keyup", (event) => {
     }
 });
 
+document.getElementById("dictationBtn").addEventListener("click", () => {
+    const dict = wordCard.querySelector(".word-text")
+    const correctWord = words[currentIndex]["headWord"];
+    let wordLength = correctWord.length;
+    let currentInput = "";
+    let currentPosition = 0;
+    wordCard.querySelector(".word-text").textContent = "_ ".repeat(wordLength);
+    const keyupHandler = (e) => {
+        if (e.key == "Escape") {
+            document.removeEventListener("keyup", keyupHandler);
+            dict.textContent = words[currentIndex]["headWord"];
+            return;
+        }
+        // 只处理字母键
+        if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
+            if (currentPosition < wordLength) {
+                // 检查输入的字母是否正确
+                if (e.key.toLowerCase() === correctWord[currentPosition].toLowerCase()) {
+                    currentInput += correctWord[currentPosition];
+                    currentPosition++;
+
+                    // 更新显示：已输入的部分显示字母，未输入的部分显示下划线
+                    let displayText = currentInput + " " + "_ ".repeat(wordLength - currentPosition);
+                    dict.textContent = displayText.trim();
+
+                    // 如果单词输入完成
+                    if (currentPosition === wordLength) {
+                        document.removeEventListener("keyup", keyupHandler);
+                        dict.textContent += '  ✅'
+                        playAudio(correctWord, 0)
+                    }
+                } else {
+                    // 输入错误，可以添加错误提示
+                    dict.textContent = (currentInput + " ❌ " + "_ ".repeat(wordLength - currentPosition - 1)).trim();
+                }
+            }
+        }
+    }
+    document.addEventListener("keyup", keyupHandler);
+});
+
+
 // 切换事件
 prevBtn.onclick = () => {
     if (indexMap.length > 0) {
@@ -289,19 +364,54 @@ settingsModal.addEventListener("click", (event) => {
 });
 
 // 异步加载 JSON
-async function loadWords() {
+async function loadWords(bookLevel) {
     try {
-        const res = await fetch(wordListUrl);
+        const res = await fetch(`${wordListUrl[bookLevel]}`);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-        const text = await res.text();
 
-        const objMatches = text.match(/{[\s\S]*?}(?=\s*{|\s*$)/g);
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
 
-        if (!objMatches) throw new Error("在文件中未找到任何有效的单词对象。");
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
 
-        words = objMatches.map((objStr) => JSON.parse(objStr.trim()));
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
 
-        renderWord(currentIndex, false); // 首次加载不自动播放
+            // 保留最后一行（可能不完整）
+            buffer = lines.pop() || '';
+
+            // 解析完整的行
+            for (const line of lines) {
+                const trimmed = line.trim();
+                if (trimmed) {
+                    try {
+                        const word = JSON.parse(trimmed);
+                        words.push(word);
+                        // 每解析100个单词就更新一次界面
+                        if (words.length % 100 === 0) {
+                            renderWord(currentIndex, false);
+                        }
+                    } catch (e) {
+                        console.warn('解析失败的行:', trimmed);
+                    }
+                }
+            }
+        }
+
+        // 处理最后一行
+        if (buffer.trim()) {
+            try {
+                const word = JSON.parse(buffer.trim());
+                words.push(word);
+            } catch (e) {
+                console.warn('解析失败的最后一行:', buffer);
+            }
+        }
+
+        renderWord(currentIndex, false);
     } catch (e) {
         console.error("加载或解析单词失败:", e);
         wordCard.innerHTML = `<div style="color:red">单词加载失败: ${e.message}</div>`;
@@ -310,7 +420,7 @@ async function loadWords() {
 
 // 初始化
 initializeTheme(); // 在加载单词前先初始化主题
-loadWords();
+loadWords("CET4");
 
 const modalLi = modalCard.querySelectorAll("li");
 for (let i = 0; i < modalLi.length; i++) {
