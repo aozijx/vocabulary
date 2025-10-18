@@ -189,33 +189,33 @@
         <div class="card-container modal-card">
             <div class="modal-content">
                 <h3 class="setting-header">词书列表</h3>
-                <ul>
-                    <li class="active"><button type="button">大学英语四级核心词汇</button></li>
-                    <li class="disabled"><button type="button">大学英语六级核心词汇 (待添加)</button></li>
-                    <li class="disabled"><button type="button">考研英语核心词汇 (待添加)</button></li>
+                <ul id="book">
+                    <li class="active" data-book="CET4"><button type="button">大学英语四级核心词汇</button><button id="addWord">添加</button></li>
+                    <li class="active" data-book="CET6"><button type="button">大学英语六级核心词汇</button><button id="addWord">添加</button></li>
+                    <li class="disabled" data-book=""><button type="button">待添加...</button></li>
                 </ul>
 
                 <!-- 静态书籍链接列表 -->
-                <h3 class="setting-header">链接</h3>
+                <h3 class="setting-header">单词</h3>
                 <ul>
                     <li>
                         <a href="https://gitee.com/zhangchang521/english-word" target="_blank" rel="noopener noreferrer"
-                            rel="noopener noreferrer"><i class="fa fa-github"></i>Gitee 数据 </a><i
+                            rel="noopener noreferrer"><i class="fa fa-github"></i>Gitee </a><i
                             class="fa fa-external-link"></i>
                     </li>
                     <li>
                         <a href="https://github.com/mahavivo/english-wordlists" target="_blank"
-                            rel="noopener noreferrer" rel="noopener noreferrer"><i class="fa fa-github"></i>Github 数据
+                            rel="noopener noreferrer" rel="noopener noreferrer"><i class="fa fa-github"></i>Github
                         </a><i class="fa fa-external-link"></i>
                     </li>
                     <li>
                         <a href="https://github.com/KyleBing/english-vocabulary" target="_blank"
-                            rel="noopener noreferrer" rel="noopener noreferrer"><i class="fa fa-github"></i>Github 数据
+                            rel="noopener noreferrer" rel="noopener noreferrer"><i class="fa fa-github"></i>Github
                         </a><i class="fa fa-external-link"></i>
                     </li>
                     <li>
                         <a href="https://github.com/KyleBing/vocabulary" target="_blank" rel="noopener noreferrer">
-                            <i></i>"蚕食" 应用 </a><i class="fa fa-external-link"></i>
+                            <i></i>"蚕食" 应用</a><i class="fa fa-external-link"></i>
                     </li>
                 </ul>
             </div>

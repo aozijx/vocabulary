@@ -181,6 +181,15 @@ body.modal-open {
     font-size: 1rem;
 }
 
+#addWord {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+}
+
+#addWord:hover {
+    background-color: var(--btn-secondary-hover-bg);
+}
+
 .modal-content ul li a i {
     margin-right: 2rem;
 }

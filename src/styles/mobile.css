@@ -12,6 +12,9 @@
     .control-btn span {
         display: none;
     }
+    #dictationBtn {
+        display: none;
+    }
 }
 
 /* --- 2. 竖屏平板 / 大型手机 (<= 768px) --- */

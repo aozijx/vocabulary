@@ -34,7 +34,7 @@ themeToggleBtn.addEventListener("click", () => {
 });
 
 // 配置
-const wordListUrl = { CET4: "data/CET4luan_2.json" };
+const wordListUrl = { CET4: "data/CET4luan_2.json", CET6: "data/CET6_2.json" };
 
 // DOM 元素
 const settingsBtn = document.getElementById("settingsBtn");
@@ -345,22 +345,40 @@ settingsBtn.addEventListener("click", () => {
     document.body.classList.add("modal-open");
 });
 
-closeModalBtn.addEventListener("click", () => {
+function closeModal() {
     modalCard.classList.remove("in");
     setTimeout(() => {
         settingsModal.classList.remove("open");
     }, 300);
     document.body.classList.remove("modal-open");
-});
+}
+
+closeModalBtn.addEventListener("click", closeModal);
 
 settingsModal.addEventListener("click", (event) => {
-    if (event.target === settingsModal) {
-        modalCard.classList.remove("in");
-        setTimeout(() => {
-            settingsModal.classList.remove("open");
-        }, 300);
-        document.body.classList.remove("modal-open");
+    if (event.target === settingsModal) closeModal();
+});
+
+document.getElementById("book").addEventListener("click", (e) => {
+    const bookElement = e.target.closest("[data-book]");
+    const book = bookElement.getAttribute("data-book");
+
+    if (!bookElement) return;
+    if (e.target.textContent == "添加") {
+        loadWords(book);
+        closeModal();
     }
+
+    // 重置状态
+    words = [];
+    currentIndex = 0;
+    indexMap = [0];
+
+    // 加载新的单词书
+    loadWords(book);
+
+    // 关闭模态框
+    closeModal();
 });
 
 // 异步加载 JSON
